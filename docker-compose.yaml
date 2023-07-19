@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  zookeeper:
+    image: quay.io/debezium/zookeeper:2.3
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
+    networks:
+      - ui-network
+  kafka:
+    image: quay.io/debezium/kafka:2.3
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      - ZOOKEEPER_CONNECT=zookeeper:2181
+    networks:
+      - ui-network
+# MySQL - для примера
+
+networks:
+  ui-network:
