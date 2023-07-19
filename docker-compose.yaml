@@ -44,7 +44,7 @@ services:
       - MYSQL_ALLOW_EMPTY_PASSWORD=True
     networks:
       - ui-network
-# Kafka connect
+# Kafka connect: сюда регать коннекторы
   connect:
     image: quay.io/debezium/connect:2.3
     container_name: connect
@@ -64,5 +64,24 @@ services:
      - STATUS_STORAGE_TOPIC=my_source_connect_statuses
     networks:
       - ui-network
+# kafka event listner
+  watcher:
+    image: quay.io/debezium/kafka:2.3
+    container_name: watcher
+    depends_on:
+      - zookeeper
+      - kafka
+    links:
+      - zookeeper:zookeeper
+      - kafka:kafka
+    command:  watch-topic -a -k dbserver1.inventory.customers
+    environment: 
+      - ZOOKEEPER_CONNECT=zookeeper:2181 #  этих ребят надо указывать явно
+      - KAFKA_BROKER=kafka:9092
+      - KAFKA_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+    networks:
+      - ui-network
+
 networks:
   ui-network:
