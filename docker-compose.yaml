@@ -44,5 +44,25 @@ services:
       - MYSQL_ALLOW_EMPTY_PASSWORD=True
     networks:
       - ui-network
+# Kafka connect
+  connect:
+    image: quay.io/debezium/connect:2.3
+    container_name: connect
+    ports:
+      - "8083:8083"
+    depends_on:
+      - kafka
+      - mysql
+    links:
+      - kafka:kafka
+      - mysql:mysql
+    environment:
+     - BOOTSTRAP_SERVERS=kafka:9092
+     - GROUP_ID=1
+     - CONFIG_STORAGE_TOPIC=my_connect_configs
+     - OFFSET_STORAGE_TOPIC=my_connect_offsets
+     - STATUS_STORAGE_TOPIC=my_source_connect_statuses
+    networks:
+      - ui-network
 networks:
   ui-network:
