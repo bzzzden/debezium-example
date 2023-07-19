@@ -1,5 +1,8 @@
 version: "3.8"
 
+####
+## !!! ВНИМАНИЕ !!! в данном примере совсем не настроены ТОМА
+####
 services:
   zookeeper:
     image: quay.io/debezium/zookeeper:2.3
