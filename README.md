@@ -1,0 +1,1 @@
+mysql -hmysql -P3306  -uroot -pdebezium 
