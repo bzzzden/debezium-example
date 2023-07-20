@@ -5,7 +5,7 @@ version: "3.8"
 ####
 services:
   zookeeper:
-    image: quay.io/debezium/zookeeper:2.3
+    image: quay.io/debezium/zookeeper:2.4
     container_name: zookeeper
     ports:
       - "2181:2181"
@@ -14,7 +14,7 @@ services:
     networks:
       - ui-network
   kafka:
-    image: quay.io/debezium/kafka:2.3
+    image: quay.io/debezium/kafka:2.4
     container_name: kafka
     ports:
       - "9092:9092"
@@ -26,7 +26,7 @@ services:
       - ui-network
 # MySQL - для примера
   mysql: # тут лежит база
-    image: quay.io/debezium/example-mysql:2.3
+    image: quay.io/debezium/example-mysql:2.4
     container_name: mysql
     ports:
       - "3306:3306"
@@ -49,7 +49,7 @@ services:
       - ui-network
 # Kafka connect: сюда регать коннекторы
   connect:
-    image: quay.io/debezium/connect:2.3
+    image: quay.io/debezium/connect:2.4
     container_name: connect
     ports:
       - "8083:8083"
@@ -69,7 +69,7 @@ services:
       - ui-network
 # kafka event listner
   watcher:
-    image: quay.io/debezium/kafka:2.3
+    image: quay.io/debezium/kafka:2.4
     container_name: watcher
     depends_on:
       - zookeeper
@@ -85,6 +85,19 @@ services:
       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
     networks:
       - ui-network
+# UI
+  debezium-u1:
+    image: quay.io/debezium/debezium-ui:2.4
+    container_name: debezium-ui
+    ports:
+      - "8080:8080"
+    depends_on:
+      - connect
+    environment: 
+      - KAFKA_CONNECT_URIS=http://connect:8083
+    networks:
+      - ui-network
+
 
 networks:
   ui-network:
