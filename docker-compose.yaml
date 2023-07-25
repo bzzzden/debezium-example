@@ -41,8 +41,6 @@ services:
     container_name: mysqlterm
     depends_on:
       - mysql
-    links:
-      - mysql:mysql
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=True
     networks:
@@ -56,9 +54,6 @@ services:
     depends_on:
       - kafka
       - mysql
-    links:
-      - kafka:kafka
-      - mysql:mysql
     environment:
      - BOOTSTRAP_SERVERS=kafka:9092
      - GROUP_ID=1
@@ -74,9 +69,6 @@ services:
     depends_on:
       - zookeeper
       - kafka
-    links:
-      - zookeeper:zookeeper
-      - kafka:kafka
     command:  watch-topic -a -k dbserver1.inventory.customers
     environment: 
       - ZOOKEEPER_CONNECT=zookeeper:2181 #  этих ребят надо указывать явно
