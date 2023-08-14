@@ -1,8 +1,4 @@
 version: "3.8"
-
-####
-## !!! ВНИМАНИЕ !!! в данном примере совсем не настроены ТОМА
-####
 services:
   zookeeper:
     image: quay.io/debezium/zookeeper:2.4
@@ -13,6 +9,13 @@ services:
       - "3888:3888"
     networks:
       - ui-network
+    volumes: 
+    #   - ./data/zoo/data:/var/lib/zookeeper/data
+    #   - ./data/zoo/log:/var/lib/zookeeper/log  
+      - ./data/zoo/data:/zookeeper/data
+      - ./data/zoo/log:/zookeeper/log
+      - ./data/zoo/conf:/zookeeper/conf
+      - ./data/zoo/txns:/zookeeper/txns
   kafka:
     image: quay.io/debezium/kafka:2.4
     container_name: kafka
@@ -24,6 +27,10 @@ services:
       - ZOOKEEPER_CONNECT=zookeeper:2181
     networks:
       - ui-network
+    volumes:
+      - ./data/kafka/data:/kafka/data
+      - ./data/kafka/logs:/kafka/logs
+      - ./data/kafka/config:/kafka/config 
 # MySQL - для примера
   mysql: # тут лежит база
     image: quay.io/debezium/example-mysql:2.4
@@ -36,16 +43,31 @@ services:
       - MYSQL_PASSWORD=mysqlpw
     networks:
       - ui-network
-  mysqlterm: # тут подключаемся к базе
-    image: mysql:8.0
-    container_name: mysqlterm
-    depends_on:
-      - mysql
+    volumes:
+      - ./data/db/mysql:/var/lib/mysql  
+  # mysqlterm: # тут подключаемся к базе
+  #   image: mysql:8.0
+  #   container_name: mysqlterm
+  #   depends_on:
+  #     - mysql
+  #   environment:
+  #     - MYSQL_ALLOW_EMPTY_PASSWORD=True
+  #   networks:
+  #     - ui-network
+  postgresql:
+    image: quay.io/debezium/postgres:15-alpine
+    container_name: postgresql
+    ports:
+      - "5432:5432"
     environment:
-      - MYSQL_ALLOW_EMPTY_PASSWORD=True
+      - POSTGRES_DB=postgresdb 
+      - POSTGRES_USER=postgresuser
+      - POSTGRES_PASSWORD=postgresS3cret  
+    volumes:
+      - ./data/db/postgresql/data:/var/lib/postgresql/data 
     networks:
       - ui-network
-# Kafka connect: сюда регать коннекторы
+  # Kafka connect: сюда регать коннекторы API к kafka
   connect:
     image: quay.io/debezium/connect:2.4
     container_name: connect
@@ -60,6 +82,8 @@ services:
      - CONFIG_STORAGE_TOPIC=my_connect_configs
      - OFFSET_STORAGE_TOPIC=my_connect_offsets
      - STATUS_STORAGE_TOPIC=my_source_connect_statuses
+    volumes:
+      - ./connector-plugins/confluentinc-kafka-connect-jdbc-10.7.4/lib:/kafka/connect/confluentinc-kafka-connect-jdbc-10.7.4 
     networks:
       - ui-network
 # kafka event listner
@@ -69,7 +93,8 @@ services:
     depends_on:
       - zookeeper
       - kafka
-    command:  watch-topic -a -k dbserver1.inventory.customers
+    command:  watch-topic -a -k customers
+    # command:  watch-topic -a -k dbserver1.inventory.customers
     environment: 
       - ZOOKEEPER_CONNECT=zookeeper:2181 #  этих ребят надо указывать явно
       - KAFKA_BROKER=kafka:9092
@@ -82,14 +107,12 @@ services:
     image: quay.io/debezium/debezium-ui:2.4
     container_name: debezium-ui
     ports:
-      - "8080:8080"
+      - "8880:8080"
     depends_on:
       - connect
     environment: 
       - KAFKA_CONNECT_URIS=http://connect:8083
     networks:
       - ui-network
-
-
 networks:
   ui-network:
