@@ -1,5 +1,0 @@
-2023-08-12 20:13:26,709 - INFO  [main:Logging@66] - Starting the log cleaner
-2023-08-12 20:37:56,722 - INFO  [kafka-shutdown-hook:Logging@66] - Shutting down the log cleaner.
-2023-08-12 20:41:00,387 - INFO  [main:Logging@66] - Starting the log cleaner
-2023-08-12 20:42:01,569 - INFO  [kafka-shutdown-hook:Logging@66] - Shutting down the log cleaner.
-2023-08-12 20:42:37,115 - INFO  [main:Logging@66] - Starting the log cleaner
