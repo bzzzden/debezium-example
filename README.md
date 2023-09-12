@@ -223,3 +223,4 @@ https://docs.confluent.io/kafka-connectors/jdbc/current/sink-connector/sink_conf
 
 Скачать плагин Sink от Confluent https://d1i4a15mxbxib1.cloudfront.net/api/plugins/confluentinc/kafka-connect-jdbc/versions/10.7.4/confluentinc-kafka-connect-jdbc-10.7.4.zip
 
+https://docs.confluent.io/platform/current/connect/logging.html

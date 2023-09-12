@@ -9,13 +9,13 @@ services:
       - "3888:3888"
     networks:
       - ui-network
-    volumes: 
+    # volumes: 
     #   - ./data/zoo/data:/var/lib/zookeeper/data
     #   - ./data/zoo/log:/var/lib/zookeeper/log  
-      - ./data/zoo/data:/zookeeper/data
-      - ./data/zoo/log:/zookeeper/log
-      - ./data/zoo/conf:/zookeeper/conf
-      - ./data/zoo/txns:/zookeeper/txns
+      # - ./data/zoo/data:/zookeeper/data
+      # - ./data/zoo/log:/zookeeper/log
+      # - ./data/zoo/conf:/zookeeper/conf
+      # - ./data/zoo/txns:/zookeeper/txns
   kafka:
     image: quay.io/debezium/kafka:2.4
     container_name: kafka
@@ -27,10 +27,10 @@ services:
       - ZOOKEEPER_CONNECT=zookeeper:2181
     networks:
       - ui-network
-    volumes:
-      - ./data/kafka/data:/kafka/data
-      - ./data/kafka/logs:/kafka/logs
-      - ./data/kafka/config:/kafka/config 
+    # volumes:
+    #   - ./data/kafka/data:/kafka/data
+    #   - ./data/kafka/logs:/kafka/logs
+    #   - ./data/kafka/config:/kafka/config 
 # MySQL - для примера
   mysql: # тут лежит база
     image: quay.io/debezium/example-mysql:2.4
@@ -87,21 +87,21 @@ services:
     networks:
       - ui-network
 # kafka event listner
-  watcher:
-    image: quay.io/debezium/kafka:2.4
-    container_name: watcher
-    depends_on:
-      - zookeeper
-      - kafka
-    command:  watch-topic -a -k customers
-    # command:  watch-topic -a -k dbserver1.inventory.customers
-    environment: 
-      - ZOOKEEPER_CONNECT=zookeeper:2181 #  этих ребят надо указывать явно
-      - KAFKA_BROKER=kafka:9092
-      - KAFKA_LISTENERS=PLAINTEXT://kafka:9092
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
-    networks:
-      - ui-network
+  # watcher:
+  #   image: quay.io/debezium/kafka:2.4
+  #   container_name: watcher
+  #   depends_on:
+  #     - zookeeper
+  #     - kafka
+  #   command:  watch-topic -a -k _Acc51
+  #   # command:  watch-topic -a -k dbserver1.inventory.customers
+  #   environment: 
+  #     - ZOOKEEPER_CONNECT=zookeeper:2181 #  этих ребят надо указывать явно
+  #     - KAFKA_BROKER=kafka:9092
+  #     - KAFKA_LISTENERS=PLAINTEXT://kafka:9092
+  #     - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+  #   networks:
+  #     - ui-network
 # UI
   debezium-u1:
     image: quay.io/debezium/debezium-ui:2.4

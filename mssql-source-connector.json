@@ -1,0 +1,22 @@
+{
+    "name": "mssql-source_Acc51",
+    "config": {
+        "snapshot.mode": "initial_only",
+        "connector.class": "io.debezium.connector.sqlserver.SqlServerConnector",
+        "database.hostname": "ip_address/hostname",
+        "database.port": "1433",
+        "database.user": "dbuser",
+        "database.password": "dbpassword",
+        "database.names": "dbname",
+        "table.include.list": "dbo._Acc51, dbo._Acc52",
+        "database.encrypt": "false",
+        "tasks.max": "1",
+        "topic.prefix": "source",
+        "schema.history.internal.kafka.bootstrap.servers": "kafka:9092",
+        "schema.history.internal.kafka.topic": "schema-changes.[dbname]",
+        "transforms": "route",
+        "transforms.route.type": "org.apache.kafka.connect.transforms.RegexRouter",
+        "transforms.route.regex": "([^.]+)\\.([^.]+)\\.([^.]+)\\.([^.]+)",
+        "transforms.route.replacement": "$4"
+    }
+}

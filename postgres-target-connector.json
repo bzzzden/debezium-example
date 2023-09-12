@@ -1,0 +1,18 @@
+{
+    "name": "postgresql-target",
+    "config": {
+        "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+        "tasks.max": "1",
+        "topics": "_Acc51, _Acc52",
+        "connection.url": "jdbc:postgresql://postgresql:5432/TLBID1",
+        "connection.user": "postgresuser",
+        "connection.password": "postgresS3cret",
+        "auto.create": "true",
+        "transforms": "unwrap",
+        "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+        "transforms.unwrap.drop.tombstones": "false",
+        "insert.mode": "upsert",
+        "pk.fields": "_IDRRef",
+        "pk.mode": "record_value"
+    }
+}
